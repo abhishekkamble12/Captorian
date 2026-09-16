@@ -58,6 +58,18 @@ Run the modular trainer after placing the dataset under `data/`:
 python train.py
 ```
 
+Train the CNN-LSTM baseline with the same Flickr8k split:
+
+```bash
+python train.py --model baseline --checkpoint checkpoints/caption_baseline_checkpoint.pt
+```
+
+Train the attention model explicitly when producing a fresh comparison checkpoint:
+
+```bash
+python train.py --model attention --checkpoint checkpoints/caption_attention_checkpoint.pt
+```
+
 The notebook can also be opened in VS Code or Jupyter for exploration. Its recommended section is titled **Reproducible attention-model pipeline**. Both paths create:
 
 ```text
@@ -85,6 +97,28 @@ Run test evaluation after training:
 python evaluate.py --caption-file data/Flickr8k_text/Flickr8k.token.txt --image-dir data/Flickr8k_Dataset --test-split data/Flickr8k_text/Flickr_8k.testImages.txt --checkpoint checkpoints/caption_attention_checkpoint.pt
 ```
 
+Compare both models on the identical test split. The command reports BLEU-1 through BLEU-4:
+
+```bash
+python evaluate.py --caption-file data/Flickr8k_text/Flickr8k.token.txt --image-dir data/Flickr8k_Dataset --test-split data/Flickr8k_text/Flickr_8k.testImages.txt --checkpoint checkpoints/caption_baseline_checkpoint.pt checkpoints/caption_attention_checkpoint.pt
+```
+
+The output is shaped for a README benchmark table:
+
+```text
+Model                                BLEU-1   BLEU-2   BLEU-3   BLEU-4
+ResNet50 + LSTM                     <run>    <run>    <run>    <run>
+ResNet50 + Attention + LSTM         <run>    <run>    <run>    <run>
+```
+
+Generate a token-level attention visualization for up to five words:
+
+```bash
+python visualize_attention.py --image path/to/image.jpg --checkpoint checkpoints/caption_attention_checkpoint.pt --output reports/attention_example.png
+```
+
+The generated PNG overlays each word's 8x8 Bahdanau spatial attention map on the input image. Add three to five representative PNGs to the project README after running this command.
+
 The current modular evaluator reports BLEU-1 through BLEU-4. METEOR, ROUGE-L, and CIDEr are available in the notebook's optional evaluator, but no benchmark values are claimed because the current notebook has not completed a reproducible end-to-end execution.
 
 Qualitative evaluation is also important. Inspect examples where the model gets objects, actions, counting, or spatial relationships wrong. Caption metrics measure word overlap and should not be treated as a complete measure of image understanding.
@@ -102,7 +136,6 @@ Qualitative evaluation is also important. Inspect examples where the model gets 
 - Add beam-search decoding.
 - Fine-tune the final ResNet layers with a lower learning rate.
 - Add CIDEr-based checkpoint selection.
-- Compare the CNN-LSTM baseline against the attention model.
 - Add automated tests for vocabulary, dataset collation, checkpoint loading, and inference.
 - Add automated tests for vocabulary, dataset collation, checkpoint loading, and inference.
 - Add GitHub Actions for syntax checks and tests.

@@ -9,6 +9,7 @@ dependencies = [
     "numpy",
     "pandas",
     "pillow",
+    "matplotlib",
     "streamlit",
     "torch",
     "torchvision",

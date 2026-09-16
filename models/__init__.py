@@ -1,4 +1,4 @@
-from .decoder import DecoderWithAttention
+from .decoder import DecoderWithAttention, DecoderWithoutAttention
 from .encoder import SpatialEncoderCNN
 
-__all__ = ['DecoderWithAttention', 'SpatialEncoderCNN']
+__all__ = ['DecoderWithAttention', 'DecoderWithoutAttention', 'SpatialEncoderCNN']

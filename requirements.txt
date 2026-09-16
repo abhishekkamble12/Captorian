@@ -5,6 +5,7 @@ pandas
 Pillow
 tqdm
 nltk
+matplotlib
 streamlit
 jupyter
 opendatasets

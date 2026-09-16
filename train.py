@@ -8,7 +8,7 @@ import torch
 import torch.nn as nn
 from torch.utils.data import DataLoader
 
-from models import DecoderWithAttention, SpatialEncoderCNN
+from models import DecoderWithAttention, DecoderWithoutAttention, SpatialEncoderCNN
 from utils import CollateBatch, RawImageCaptionDataset, Vocabulary
 
 
@@ -45,7 +45,8 @@ def train(args):
     train_loader = DataLoader(train_set, args.batch_size, shuffle=True, collate_fn=collate)
     val_loader = DataLoader(val_set, args.batch_size, shuffle=False, collate_fn=collate)
     encoder = SpatialEncoderCNN(trainable=False).to(device)
-    decoder = DecoderWithAttention(len(vocab)).to(device)
+    decoder_class = DecoderWithAttention if args.model == 'attention' else DecoderWithoutAttention
+    decoder = decoder_class(len(vocab)).to(device)
     criterion = nn.CrossEntropyLoss(ignore_index=vocab.stoi['<pad>'])
     optimizer = torch.optim.Adam(decoder.parameters(), lr=args.learning_rate)
     for epoch in range(args.epochs):
@@ -64,7 +65,7 @@ def train(args):
             train_loss += loss.item()
         print(f'epoch={epoch + 1} train_loss={train_loss / max(1, len(train_loader)):.4f}')
     args.checkpoint.parent.mkdir(parents=True, exist_ok=True)
-    torch.save({'encoder_state_dict': encoder.state_dict(), 'decoder_state_dict': decoder.state_dict(), 'vocab_stoi': vocab.stoi, 'vocab_itos': vocab.itos, 'max_length': int(train_df.word_count.max()) + 2}, args.checkpoint)
+    torch.save({'model_type': args.model, 'encoder_state_dict': encoder.state_dict(), 'decoder_state_dict': decoder.state_dict(), 'vocab_stoi': vocab.stoi, 'vocab_itos': vocab.itos, 'max_length': int(train_df.word_count.max()) + 2}, args.checkpoint)
     print(f'saved checkpoint: {args.checkpoint}')
 
 
@@ -75,6 +76,7 @@ def main():
     parser.add_argument('--train-split', type=Path, default='data/Flickr8k_text/Flickr_8k.trainImages.txt')
     parser.add_argument('--val-split', type=Path, default='data/Flickr8k_text/Flickr_8k.devImages.txt')
     parser.add_argument('--checkpoint', type=Path, default='checkpoints/caption_attention_checkpoint.pt')
+    parser.add_argument('--model', choices=['attention', 'baseline'], default='attention')
     parser.add_argument('--epochs', type=int, default=10)
     parser.add_argument('--batch-size', type=int, default=32)
     parser.add_argument('--learning-rate', type=float, default=3e-4)
