@@ -1,0 +1,29 @@
+# Python
+.venv/
+__pycache__/
+*.py[cod]
+.ipynb_checkpoints/
+
+# Secrets
+kaggle.json
+.env
+
+# Dataset and generated artifacts
+Flickr8k_Dataset/
+Flickr_8k*.txt
+Flickr8k.token.txt
+data/
+*.zip
+*.pkl
+*.pt
+*.pth
+
+# Streamlit
+.streamlit/
+
+# Logs and local outputs
+*.log
+outputs/
+
+# Local model artifacts; use Git LFS or a release for public weights.
+caption_attention_checkpoint.pt

@@ -1,0 +1,19 @@
+[project]
+name = "captorian"
+version = "0.1.0"
+description = "Multimodal image captioning with ResNet50, Bahdanau attention, and an LSTM decoder"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "nltk",
+    "numpy",
+    "pandas",
+    "pillow",
+    "streamlit",
+    "torch",
+    "torchvision",
+    "tqdm",
+]
+
+[tool.uv.workspace]
+members = []
