@@ -17,7 +17,7 @@ def main():
     test_images = {line.strip() for line in open(args.test_split, encoding='utf-8') if line.strip()}
     dataframe = pd.read_csv(args.caption_file, sep='\t', names=['image_id', 'caption'])
     dataframe['image'] = dataframe.image_id.str.split('#').str[0]
-    test_groups = dataframe[dataframe.image.isin(test_images)].groupby('image')
+    test_groups = list(dataframe[dataframe.image.isin(test_images)].groupby('image'))
     results = []
     for checkpoint_path in args.checkpoint:
         encoder, decoder, checkpoint = load_checkpoint(checkpoint_path)
